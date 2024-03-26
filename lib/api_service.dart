@@ -1,30 +1,63 @@
 import 'package:retrofit/retrofit.dart';
 import 'package:dio/dio.dart';
-
 import 'models.dart';
 
-part 'api_service.g.dart';
+class ApiService {
+  final Dio dio;
 
-@RestApi(baseUrl: 'https://jsonplaceholder.typicode.com')
-abstract class ApiService {
-  factory ApiService(Dio dio, {String baseUrl}) = _ApiService;
+  ApiService({required this.dio});
 
-  @GET('/posts')
-  Future<List<Post>> getPosts();
+  Future<List<Post>> fetchPosts() async {
+    try {
+      final response = await dio.get('https://jsonplaceholder.typicode.com/posts');
+      if (response.statusCode == 200) {
+        List<dynamic> data = response.data;
+        return data.map((json) => Post.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load posts');
+      }
+    } catch (e) {
+      throw Exception('Failed to load posts');
+    }
+  }
 
-  @PUT('/posts/{postId}')
-  Future<void> editPost(@Path('postId') int postId, @Body() Map<String, dynamic> data);
-  
-  @DELETE('/posts/{postId}')
-  Future<void> deletePost(@Path('postId') int postId);
+  Future<void> deletePost(int postId) async {
+    try {
+      final response = await dio.delete('https://jsonplaceholder.typicode.com/posts/$postId');
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception('Failed to delete post');
+      }
+    } catch (e) {
+      throw Exception('Failed to delete post');
+    }
+  }
 
+  Future<List<Comment>> fetchComments(int postId) async {
+    try {
+      final response = await dio.get('https://jsonplaceholder.typicode.com/posts/$postId/comments');
+      if (response.statusCode == 200) {
+        List<dynamic> data = response.data;
+        return data.map((json) => Comment.fromJson(json)).toList();
+      } else {
+        throw Exception('Failed to load comments');
+      }
+    } catch (e) {
+      throw Exception('Failed to load comments');
+    }
+  }
 
-  @GET('/posts/{postId}/comments')
-  Future<List<Comment>> getComments(@Path('postId') int postId);
-
-  @PUT('/posts/{postId}//comments/{commentId}')
-  Future<void> editComment(@Path('commentId') int commentId, @Body() Map<String, dynamic> data);
-  
-  @DELETE('/posts/{postId}/comments/{commentId}')
-  Future<void> deleteComment(@Path('commentId') int commentId);
+  Future<void> deleteComment(int commentId) async {
+    try {
+      final response = await dio.delete('https://jsonplaceholder.typicode.com/comments/$commentId');
+      if (response.statusCode == 200) {
+        return;
+      } else {
+        throw Exception('Failed to delete comment');
+      }
+    } catch (e) {
+      throw Exception('Failed to delete comment');
+    }
+  }
 }
