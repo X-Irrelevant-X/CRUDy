@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
-import 'dart:convert';
-import 'models.dart';
-import 'api_service.dart';
+import 'models.dart'; // Import your Post class
+import 'api_service.dart'; // Import your generated ApiService
 
 void main() {
   runApp(MyApp());
@@ -14,24 +13,22 @@ class MyApp extends StatefulWidget {
 }
 
 class MyAppState extends State<MyApp> {
-  final dio = Dio();
   late ApiService apiService;
-
   List<Post> posts = [];
-  Map<int, bool> showComments = {};
 
   @override
   void initState() {
     super.initState();
-    apiService = ApiService(dio: dio);
+    apiService = ApiService(Dio());
     fetchPosts();
   }
 
   Future<void> fetchPosts() async {
     try {
-      posts = await apiService.fetchPosts();
-      showComments = Map.fromIterable(posts, key: (post) => post.id, value: (_) => false);
-      setState(() {});
+      final response = await apiService.fetchPosts();
+      setState(() {
+        posts = response;
+      });
     } catch (e) {
       print('Error: $e');
     }
@@ -48,18 +45,10 @@ class MyAppState extends State<MyApp> {
     }
   }
 
-  Future<void> deleteComment(int commentId) async {
-    try {
-      await apiService.deleteComment(commentId);
-      print('Comment deleted');
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         appBar: AppBar(
           backgroundColor: const Color.fromRGBO(140, 85, 166, 1),
