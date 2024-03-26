@@ -50,6 +50,34 @@ class _ApiService implements ApiService {
   }
 
   @override
+  Future<void> editPost(
+    int postId,
+    Map<String, dynamic> postData,
+  ) async {
+    const _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(postData);
+    await _dio.fetch<void>(_setStreamType<void>(Options(
+      method: 'PUT',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/posts/${postId}',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        ))));
+  }
+
+  @override
   Future<void> deletePost(int postId) async {
     const _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};

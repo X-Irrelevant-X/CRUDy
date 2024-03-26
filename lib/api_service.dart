@@ -1,6 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:retrofit/retrofit.dart';
-import 'models.dart'; // Import your generated Post class
+import 'models.dart'; 
 
 part 'api_service.g.dart';
 
@@ -10,6 +10,9 @@ abstract class ApiService {
 
   @GET("/posts")
   Future<List<Post>> fetchPosts();
+
+  @PUT("/posts/{id}")
+  Future<void> editPost(@Path("id") int postId, @Body() Map<String, dynamic> postData);
 
   @DELETE("/posts/{id}")
   Future<void> deletePost(@Path("id") int postId);
