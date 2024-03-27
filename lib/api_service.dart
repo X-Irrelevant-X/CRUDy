@@ -16,4 +16,13 @@ abstract class ApiService {
 
   @DELETE("/posts/{id}")
   Future<void> deletePost(@Path("id") int postId);
+
+  @GET("/comments/")
+  Future<Comment> fetchComment();
+
+  @PUT("/comments/{commentId}")
+  Future<void> editComment(@Path("commentId") int commentId, @Body() Map<String, dynamic> commentData);
+
+  @DELETE("/comments/{commentId}")
+  Future<void> deleteComment(@Path("commentId") int commentId);
 }

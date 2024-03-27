@@ -14,18 +14,15 @@ class Post {
   Map<String, dynamic> toJson() => _$PostToJson(this);
 }
 
+@JsonSerializable()
 class Comment {
+  final int pId;
   final int id;
   final String name;
   final String body;
 
-  Comment({required this.id, required this.name, required this.body});
+  Comment({required this.pId, required this.id, required this.name, required this.body});
 
-  factory Comment.fromJson(Map<String, dynamic> json) {
-    return Comment(
-      id: json['id'],
-      name: json['name'],
-      body: json['body'],
-    );
-  }
+  factory Comment.fromJson(Map<String, dynamic> json) => _$CommentFromJson(json);
+  Map<String, dynamic> toJson() => _$CommentToJson(this);
 }

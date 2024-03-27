@@ -17,3 +17,17 @@ Map<String, dynamic> _$PostToJson(Post instance) => <String, dynamic>{
       'title': instance.title,
       'body': instance.body,
     };
+
+Comment _$CommentFromJson(Map<String, dynamic> json) => Comment(
+      pId: json['pId'] as int,
+      id: json['id'] as int,
+      name: json['name'] as String,
+      body: json['body'] as String,
+    );
+
+Map<String, dynamic> _$CommentToJson(Comment instance) => <String, dynamic>{
+      'pId': instance.pId,
+      'id': instance.id,
+      'name': instance.name,
+      'body': instance.body,
+    };
