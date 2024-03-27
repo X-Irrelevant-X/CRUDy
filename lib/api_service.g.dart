@@ -115,7 +115,7 @@ class _ApiService implements ApiService {
     )
             .compose(
               _dio.options,
-              '/comments/',
+              '/comments',
               queryParameters: queryParameters,
               data: _data,
             )
