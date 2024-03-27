@@ -4,10 +4,12 @@ import 'models.dart';
 import 'api_service.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   MyAppState createState() => MyAppState();
 }
@@ -73,7 +75,7 @@ class MyAppState extends State<MyApp> {
           centerTitle: true,
           toolbarHeight: 55,
           title: const Text(
-            'Posts',
+            'CRUDy',
             style: TextStyle(
               fontWeight: FontWeight.bold,
               fontSize: 30,
@@ -85,48 +87,58 @@ class MyAppState extends State<MyApp> {
           itemBuilder: (context, index) {
             return Column(
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey, width: 2.0),
-                  ),
-                  margin: const EdgeInsets.all(5.0),
-                  child: ListTile(
-                    title: Row(
-                      children: [
-                        Expanded(
-                          child: Text(posts[index].title),
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.edit),
-                          onPressed: () {
-                            // Show edit dialog
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return EditPostDialog(
-                                  post: posts[index],
-                                  onEdit: (newTitle, newBody) {
-                                    editPost(posts[index].id, newTitle, newBody);
-                                    Navigator.of(context).pop();
-                                  },
-                                );
-                              },
-                            );
-                          },
-                        ),
-                        IconButton(
-                          icon: Icon(Icons.delete),
-                          onPressed: () {
-                            deletePost(posts[index].id);
-                          },
-                        ),
-                      ],
+                GestureDetector(
+                  onLongPress: () {
+                    showDialog(
+                      context: context,
+                      builder: (BuildContext context) {
+                        return AlertDialog(
+                          content: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              TextButton(
+                                onPressed: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return EditPostDialog(
+                                        post: posts[index],
+                                        onEdit: (newTitle, newBody) {
+                                          editPost(posts[index].id, newTitle, newBody);
+                                          Navigator.of(context).pop();
+                                        },
+                                      );
+                                    },
+                                  );
+                                },
+                                child: const Text('Edit'),
+                              ),
+                              TextButton(
+                                onPressed: () {
+                                  deletePost(posts[index].id);
+                                  Navigator.of(context).pop();
+                                },
+                                child: const Text('Delete'),
+                              ),
+                            ],
+                          ),
+                        );
+                      },
+                    );
+                  },
+                  child: Container(
+                    decoration: BoxDecoration(
+                      border: Border.all(color: Colors.grey, width: 2.0),
                     ),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(posts[index].body),
-                      ],
+                    margin: const EdgeInsets.all(5.0),
+                    child: ListTile(
+                      title: Text(posts[index].title),
+                      subtitle: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(posts[index].body),
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -143,37 +155,45 @@ class EditPostDialog extends StatefulWidget {
   final Post post;
   final Function(String, String) onEdit;
 
-  const EditPostDialog({Key? key, required this.post, required this.onEdit}) : super(key: key);
+  const EditPostDialog({super.key, required this.post, required this.onEdit});
 
   @override
   _EditPostDialogState createState() => _EditPostDialogState();
 }
 
 class _EditPostDialogState extends State<EditPostDialog> {
-  late TextEditingController _titleController;
-  late TextEditingController _bodyController;
+  late TextEditingController editTitle;
+  late TextEditingController editBody;
 
   @override
   void initState() {
     super.initState();
-    _titleController = TextEditingController(text: widget.post.title);
-    _bodyController = TextEditingController(text: widget.post.body);
+    editTitle = TextEditingController(text: widget.post.title);
+    editBody = TextEditingController(text: widget.post.body);
   }
 
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text('Edit Post'),
+      title: const Text('Edit Post'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           TextField(
-            controller: _titleController,
-            decoration: InputDecoration(labelText: 'Title'),
+            controller: editTitle,
+            decoration: const InputDecoration(
+              labelText: 'Title:', 
+              labelStyle: TextStyle(fontSize: 20),
+            ),
           ),
+          const SizedBox(height: 10),
           TextField(
-            controller: _bodyController,
-            decoration: InputDecoration(labelText: 'Body'),
+            controller: editBody,
+            decoration: const InputDecoration(
+              labelText: 'Body:', 
+              labelStyle: TextStyle(fontSize: 20),
+            ),
+            maxLines: null,
           ),
         ],
       ),
@@ -182,13 +202,13 @@ class _EditPostDialogState extends State<EditPostDialog> {
           onPressed: () {
             Navigator.of(context).pop();
           },
-          child: Text('Cancel'),
+          child: const Text('Cancel'),
         ),
         ElevatedButton(
           onPressed: () {
-            widget.onEdit(_titleController.text, _bodyController.text);
+            widget.onEdit(editTitle.text, editBody.text);
           },
-          child: Text('Save'),
+          child: const Text('Save'),
         ),
       ],
     );
@@ -196,8 +216,8 @@ class _EditPostDialogState extends State<EditPostDialog> {
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _bodyController.dispose();
+    editTitle.dispose();
+    editBody.dispose();
     super.dispose();
   }
 }

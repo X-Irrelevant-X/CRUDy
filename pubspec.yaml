@@ -13,6 +13,7 @@ dependencies:
   logger: any 
   json_annotation: ^4.8.1
 
+  dio: any
 dev_dependencies:
   flutter_test:
     sdk: flutter
