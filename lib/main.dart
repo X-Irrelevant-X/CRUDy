@@ -17,14 +17,14 @@ class MyApp extends StatefulWidget {
 class MyAppState extends State<MyApp> {
   late ApiService apiService;
   List<Post> posts = [];
-  List<Post> comments = [];
+  List<Comment> comments = [];
 
   @override
   void initState() {
     super.initState();
     apiService = ApiService(Dio());
     fetchPosts();
-    fetchComment();
+    //fetchComment();
   }
 
   Future<void> fetchPosts() async {
@@ -62,17 +62,6 @@ class MyAppState extends State<MyApp> {
           posts[updatedPostIndex].body = newBody;
         });
       }
-    } catch (e) {
-      print('Error: $e');
-    }
-  }
-
-  Future<void> fetchComment() async {
-    try {
-      final tryC = await apiService.fetchComment();
-      setState(() {
-        comments = tryC;
-      });
     } catch (e) {
       print('Error: $e');
     }
